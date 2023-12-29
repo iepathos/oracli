@@ -170,10 +170,8 @@ def confirm_response(prompt_response):
     return False
 
 
-def generate_script(user, msg, shebang, output_file):
+def generate_script(msg, shebang, output_file):
     thread_id = get_or_create_thread()
-    # thread = create_thread(user)
-    # thread_id = thread.id
     tags = [
         "in {os_type}".format(os_type=platform.system()),
         "with {shebang}".format(shebang=shebang),
@@ -225,21 +223,19 @@ def cli():
     pass
 
 @cli.command()
-@click.argument('q')
+@click.argument('prompt')
 @click.option('-o', '--output-file')
-def sh(q, output_file='output.sh'):
-    user = os.environ.get("USER")
+def sh(prompt, output_file='output.sh'):
     shebang = os.environ.get("SHELL")
-    generate_script(user, q, shebang, output_file)
+    generate_script(prompt, shebang, output_file)
 
 
 @cli.command()
-@click.argument('q')
+@click.argument('prompt')
 @click.option('-o', '--output-file')
-def py(q, output_file='output.py'):
-    user = os.environ.get("USER")
+def py(prompt, output_file='output.py'):
     shebang = '/usr/bin/env python'
-    generate_script(user, q, shebang, output_file)
+    generate_script(prompt, shebang, output_file)
 
 
 @cli.command()
@@ -253,6 +249,4 @@ def clear():
 
 
 if __name__ == '__main__':
-    user = os.environ.get("USER")
-    create_thread(user)
     cli()
