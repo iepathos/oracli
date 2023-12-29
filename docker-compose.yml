@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  oracli:
+    build: .
+    container_name: oracli
+    environment:
+      - SHELL=/bin/bash
+    volumes:
+      - .env:/.env
