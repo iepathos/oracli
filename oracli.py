@@ -95,10 +95,6 @@ def get_or_create_thread():
 
 
 def get_message_value(message):
-    return message['content'][0]['text']['value']
-
-
-def print_message(message):
     '''
     {
         'id': 'msg_zZ4fKCRWWfiAMHGY0Sz1rcfu',
@@ -117,8 +113,11 @@ def print_message(message):
         'run_id': 'run_HxFioX50N2IZTFXdM6BfKikp',
         'thread_id': 'thread_Q9FHIWG3A3AyBto8lZVfHHDq'}
     '''
-    print(get_message_value(message))
+    return message['content'][0]['text']['value']
 
+
+def print_message(message):
+    print(get_message_value(message))
 
 
 def parse_shell_commands(text):
