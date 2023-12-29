@@ -20,7 +20,6 @@ APP_NAME = "oracli"
 
 ORACLI_DIR = os.path.expanduser('~/.oracli')
 ORACLI_THREAD_FILE = os.path.join(ORACLI_DIR, 'current_thread')
-OUTPUT_FILE = 'oracli.sh'
 
 def write_thread_file(thread_id):
     if not os.path.exists(ORACLI_DIR):
@@ -157,14 +156,13 @@ def confirm_response(prompt_response):
     return False
 
 
-def create_message(user, msg):
+def generate_script(user, msg, shebang, output_file):
     thread_id = get_or_create_thread()
     # thread = create_thread(user)
     # thread_id = thread.id
-    shell_type = os.environ.get("SHELL")
     tags = [
         "in {os_type}".format(os_type=platform.system()),
-        "with shell {shell_type}".format(shell_type=shell_type),
+        "with {shebang}".format(shebang=shebang),
     ]
 
     for tag in tags:
@@ -205,22 +203,18 @@ def create_message(user, msg):
 
     print()
     
-    # for shell_command in shell_commands:
-    #     print(shell_command)
+    if os.path.exists(output_file):
+        os.remove(output_file)
 
-
-    if os.path.exists(OUTPUT_FILE):
-        os.remove(OUTPUT_FILE)
-
-    with open(OUTPUT_FILE, 'w') as f:
-        f.write('#!{}\n'.format(shell_type))
+    with open(output_file, 'w') as f:
+        f.write('#!{}\n'.format(shebang))
         for line in shell_commands:
-            f.write(line.strip() + "\n")
+            f.write(line + "\n")
 
-    st = os.stat(OUTPUT_FILE)
-    os.chmod(OUTPUT_FILE, st.st_mode | stat.S_IEXEC)
+    st = os.stat(output_file)
+    os.chmod(output_file, st.st_mode | stat.S_IEXEC)
 
-    print("Generated {} with shell commands.".format(OUTPUT_FILE))
+    print("Generated {} with shell commands.".format(output_file))
 
 
 @click.group()
@@ -229,9 +223,18 @@ def cli():
 
 @cli.command()
 @click.argument('q')
-def gen(q):
+def sh(q):
     user = os.environ.get("USER")
-    create_message(user, q)
+    shebang = os.environ.get("SHELL")
+    generate_script(user, q, shebang, 'output.sh')
+
+
+@cli.command()
+@click.argument('q')
+def py(q):
+    user = os.environ.get("USER")
+    shebang = '/usr/bin/env python'
+    generate_script(user, q, shebang, 'output.py')
 
 
 @cli.command()
