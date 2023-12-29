@@ -10,6 +10,7 @@ python = "^3.11"
 openai = "^1.6.1"
 python-dotenv = "^1.0.0"
 click = "^8.1.7"
+loguru = "^0.7.2"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.7.1"

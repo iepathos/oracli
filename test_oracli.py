@@ -19,8 +19,20 @@ This command will open Firefox in the default web browser on your Darwin system.
 		'''
 
 		expected_output = ['open -a Firefox']
-		verbose = True
-		output = parse_shell_commands(input_text, verbose)
+		output = parse_shell_commands(input_text)
+		assert(output == expected_output)
+
+
+		input_text2 = '''
+To open Firefox in Darwin using the `/bin/zsh` shell, you can use the `open` command in the terminal. Here's the command you can use:
+
+```bash
+open -a Firefox
+```
+
+This command will open Firefox if it is installed on your system.
+		'''
+		output = parse_shell_commands(input_text2)
 		assert(output == expected_output)
 
 
