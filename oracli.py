@@ -152,7 +152,7 @@ def write_commands_to_file(commands, shebang, output_file):
 
     with open(output_file, 'w') as f:
         if shebang not in commands[0]:
-            f.write('#!{}\n'.format(shebang))
+            f.write('#!{shebang}\n'.format(shebang=shebang))
         for line in commands:
             f.write(line + "\n")
 
