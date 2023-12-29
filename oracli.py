@@ -36,7 +36,8 @@ def get_thread():
 
 def _init_logger():
     logger = logging.getLogger(APP_NAME)
-    logging.basicConfig(level=logging.INFO)
+    if os.environ.get("DEBUG", False):
+	    logging.basicConfig(level=logging.INFO)
 
 _init_logger()
 _logger = logging.getLogger(APP_NAME)
@@ -227,6 +228,7 @@ def clear():
 		os.remove(ORACLI_THREAD_FILE)
 	else:
 		_logger.info("No assistant thread found. {}".format(ORACLI_THREAD_FILE))
+	print("Done.")
 
 
 if __name__ == '__main__':
