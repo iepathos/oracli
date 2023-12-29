@@ -206,7 +206,8 @@ def generate_script(user, msg, shebang, output_file):
         os.remove(output_file)
 
     with open(output_file, 'w') as f:
-        f.write('#!{}\n'.format(shebang))
+        if shebang not in shell_commands[0]:
+            f.write('#!{}\n'.format(shebang))
         for line in shell_commands:
             f.write(line + "\n")
 
