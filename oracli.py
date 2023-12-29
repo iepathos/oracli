@@ -82,7 +82,6 @@ def create_thread(user):
 	return thread
 
 
-
 def get_or_create_thread():
 	thread_id = get_thread()
 	if thread_id is None:
@@ -174,7 +173,7 @@ def create_message(user, msg):
 	    content=msg,
 	)
 	# print(message)
-	assistant_id = get_assistant_id()
+	assistant_id = get_or_create_assistant()
 	run = client.beta.threads.runs.create(
 	  thread_id=thread_id,
 	  assistant_id=assistant_id,
@@ -232,7 +231,6 @@ def clear():
 
 
 if __name__ == '__main__':
-	# create_assistant()
 	user = os.environ.get("USER")
 	create_thread(user)
 	cli()
