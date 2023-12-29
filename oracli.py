@@ -200,13 +200,13 @@ def create_message(user, msg):
     text = get_message_value(message)
     shell_commands = parse_shell_commands(text)
     if len(shell_commands) == 0:
-        log.warning("No shell commands parsed from openai response text")
+        log.warning("No shell commands parsed from openai response text.")
         return
 
     print()
     
-    for shell_command in shell_commands:
-        print(shell_command)
+    # for shell_command in shell_commands:
+    #     print(shell_command)
 
 
     if os.path.exists(OUTPUT_FILE):
@@ -220,7 +220,7 @@ def create_message(user, msg):
     st = os.stat(OUTPUT_FILE)
     os.chmod(OUTPUT_FILE, st.st_mode | stat.S_IEXEC)
 
-    print("Generated {}".format(OUTPUT_FILE))
+    print("Generated {} with shell commands.".format(OUTPUT_FILE))
 
 
 @click.group()
@@ -237,7 +237,7 @@ def gen(q):
 @cli.command()
 def clear():
     if os.path.exists(ORACLI_THREAD_FILE):
-        log.warning("Removing existing assistant thread")
+        log.warning("Removing existing assistant thread.")
         os.remove(ORACLI_THREAD_FILE)
     else:
         log.info("No assistant thread found. {}".format(ORACLI_THREAD_FILE))
