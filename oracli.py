@@ -134,7 +134,7 @@ def parse_shell_commands(text, verbose=False):
 	for idx, line in enumerate(text.split('\n')):
 		if verbose:
 			_logger.info('{} {}'.format(idx, line))
-		if "```shell" in line and start is None:
+		if "```" in line and start is None:
 			start = idx
 			if verbose:
 				_logger.info('start code fence')
