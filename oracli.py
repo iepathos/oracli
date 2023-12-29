@@ -15,10 +15,9 @@ from dotenv import load_dotenv
 from loguru import logger as log
 
 APP_NAME = "oracli"
-
-
 ORACLI_DIR = os.path.expanduser('~/.oracli')
 ORACLI_THREAD_FILE = os.path.join(ORACLI_DIR, 'current_thread')
+
 
 def write_thread_file(thread_id):
     if not os.path.exists(ORACLI_DIR):
