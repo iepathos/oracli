@@ -188,7 +188,7 @@ def generate_script(msg, shebang, output_file):
     run = client.beta.threads.runs.create(
       thread_id=thread_id,
       assistant_id=assistant_id,
-      instructions="Assist user with shell commands to accomplish their goal."
+      instructions="Assist user with script commands to accomplish their goals."
     )
 
     while run.status != "completed":
