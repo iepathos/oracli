@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import stat
 import time
 import click
 import logging
@@ -160,9 +161,10 @@ def create_message(user, msg):
     thread_id = get_or_create_thread()
     # thread = create_thread(user)
     # thread_id = thread.id
+    shell_type = os.environ.get("SHELL")
     tags = [
         "in {os_type}".format(os_type=platform.system()),
-        "with shell {shell_type}".format(shell_type=os.environ.get("SHELL")),
+        "with shell {shell_type}".format(shell_type=shell_type),
     ]
 
     for tag in tags:
@@ -211,8 +213,12 @@ def create_message(user, msg):
         os.remove(OUTPUT_FILE)
 
     with open(OUTPUT_FILE, 'w') as f:
-        f.write('#!/usr/bin/bash\n')
-        f.writelines(shell_commands)
+        f.write('#!{}\n'.format(shell_type))
+        for line in shell_commands:
+            f.write(line.strip() + "\n")
+
+    st = os.stat(OUTPUT_FILE)
+    os.chmod(OUTPUT_FILE, st.st_mode | stat.S_IEXEC)
 
     print("Generated {}".format(OUTPUT_FILE))
 
@@ -223,7 +229,7 @@ def cli():
 
 @cli.command()
 @click.argument('q')
-def question(q):
+def gen(q):
     user = os.environ.get("USER")
     create_message(user, q)
 
