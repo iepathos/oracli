@@ -13,6 +13,7 @@ click = "^8.1.7"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.7.1"
+pytest = "^7.4.3"
 
 [build-system]
 requires = ["poetry-core"]
