@@ -9,7 +9,6 @@ import logging
 import readline
 import platform
 import subprocess
-# from typing import List
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -39,7 +38,6 @@ def get_thread():
 
 def _initlog():
     if os.environ.get("DEBUG", False):
-        # import logging
         logging.basicConfig(level=logging.INFO)
 
 _initlog()
