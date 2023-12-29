@@ -119,7 +119,7 @@ def print_message(message):
 
 
 
-def parse_shell_commands(text: str):
+def parse_shell_commands(text, verbose=False):
 	'''
 	Shell commands in the message should be code fenced like
 
@@ -132,15 +132,20 @@ def parse_shell_commands(text: str):
 	res = []
 	start = None
 	for idx, line in enumerate(text.split('\n')):
-		print(idx, line)
-		if '```shell' in line:
-			print('found code fence')
-		if "```" in line and start is None:
+		if verbose:
+			_logger.info('{} {}'.format(idx, line))
+		if "```shell" in line and start is None:
 			start = idx
-		if "```" in line and start:
+			if verbose:
+				_logger.info('start code fence')
+		elif "```" in line and start is not None:
 			# end = idx
 			start = None
-		if line != '```' and start:
+			if verbose:
+				_logger.info('end code fence')
+		elif '```' not in line and start is not None:
+			if verbose:
+				_logger.info('add line from code fence')
 			res.append(line)
 	return res
 
