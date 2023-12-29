@@ -52,7 +52,7 @@ client = OpenAI(
 
 def create_assistant():
     assistant = client.beta.assistants.create(
-        name="Shellai",
+        name="Oracli",
         instructions="You are a personal command line shell assistant. Write and run code to accomplish command line tasks.",
         tools=[{"type": "code_interpreter"}],
         model="gpt-3.5-turbo"
