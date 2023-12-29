@@ -22,3 +22,7 @@ This command will open Firefox in the default web browser on your Darwin system.
 		verbose = True
 		output = parse_shell_commands(input_text, verbose)
 		assert(output == expected_output)
+
+
+if __name__ == '__main__':
+    unittest.main()
