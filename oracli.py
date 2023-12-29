@@ -212,7 +212,7 @@ def generate_script(user, msg, shebang, output_file):
     text = get_message_value(message)
     commands = parse_shell_commands(text)
     if len(commands) == 0:
-        log.warning("No shell commands parsed from openai response text.")
+        log.warning("No code fenced commands parsed from openai response text.")
         return
 
     print()
