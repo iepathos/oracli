@@ -148,6 +148,21 @@ def parse_shell_commands(text):
     return res
 
 
+def write_commands_to_file(commands, shebang, output_file):
+    if os.path.exists(output_file):
+        os.remove(output_file)
+
+    with open(output_file, 'w') as f:
+        if shebang not in commands[0]:
+            f.write('#!{}\n'.format(shebang))
+        for line in commands:
+            f.write(line + "\n")
+
+    st = os.stat(output_file)
+    os.chmod(output_file, st.st_mode | stat.S_IEXEC)
+
+    print("Generated {}".format(output_file))
+
 
 def confirm_response(prompt_response):
     if prompt_response.strip() == '' or prompt_response.strip().lower() in ['y', 'ye', 'yes']:
@@ -195,26 +210,14 @@ def generate_script(user, msg, shebang, output_file):
     print_message(message)
 
     text = get_message_value(message)
-    shell_commands = parse_shell_commands(text)
-    if len(shell_commands) == 0:
+    commands = parse_shell_commands(text)
+    if len(commands) == 0:
         log.warning("No shell commands parsed from openai response text.")
         return
 
     print()
     
-    if os.path.exists(output_file):
-        os.remove(output_file)
-
-    with open(output_file, 'w') as f:
-        if shebang not in shell_commands[0]:
-            f.write('#!{}\n'.format(shebang))
-        for line in shell_commands:
-            f.write(line + "\n")
-
-    st = os.stat(output_file)
-    os.chmod(output_file, st.st_mode | stat.S_IEXEC)
-
-    print("Generated {}".format(output_file))
+    write_commands_to_file(commands, shebang, output_file)
 
 
 @click.group()
