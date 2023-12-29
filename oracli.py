@@ -220,6 +220,12 @@ def question(q):
 	create_message(user, q)
 
 
+@cli.command()
+def clear():
+	if os.path.exists(ORACLI_THREAD_FILE):
+		os.remove(ORACLI_THREAD_FILE)
+
+
 if __name__ == '__main__':
 	# create_assistant()
 	user = os.environ.get("USER")
