@@ -214,7 +214,7 @@ def generate_script(user, msg, shebang, output_file):
     st = os.stat(output_file)
     os.chmod(output_file, st.st_mode | stat.S_IEXEC)
 
-    print("Generated {} with shell commands.".format(output_file))
+    print("Generated {}".format(output_file))
 
 
 @click.group()
