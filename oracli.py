@@ -15,7 +15,7 @@ APP_NAME = "oracli"
 
 
 ORACLI_DIR = os.path.expanduser('~/.oracli')
-ORACLI_THREAD_FILE = os.path.join(ORACLI_DIR, 'current_thread.txt')
+ORACLI_THREAD_FILE = os.path.join(ORACLI_DIR, 'current_thread')
 
 
 def write_thread_file(thread_id):
@@ -36,7 +36,7 @@ def get_thread():
 
 def _init_logger():
     logger = logging.getLogger(APP_NAME)
-    logger.setLevel(logging.INFO) 
+    logging.basicConfig(level=logging.INFO)
 
 _init_logger()
 _logger = logging.getLogger(APP_NAME)
@@ -223,7 +223,10 @@ def question(q):
 @cli.command()
 def clear():
 	if os.path.exists(ORACLI_THREAD_FILE):
+		_logger.warning("Removing existing assistant thread")
 		os.remove(ORACLI_THREAD_FILE)
+	else:
+		_logger.info("No assistant thread found. {}".format(ORACLI_THREAD_FILE))
 
 
 if __name__ == '__main__':
