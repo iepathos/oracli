@@ -226,18 +226,20 @@ def cli():
 
 @cli.command()
 @click.argument('q')
-def sh(q):
+@click.option('-o', '--output-file')
+def sh(q, output_file='output.sh'):
     user = os.environ.get("USER")
     shebang = os.environ.get("SHELL")
-    generate_script(user, q, shebang, 'output.sh')
+    generate_script(user, q, shebang, output_file)
 
 
 @cli.command()
 @click.argument('q')
-def py(q):
+@click.option('-o', '--output-file')
+def py(q, output_file='output.py'):
     user = os.environ.get("USER")
     shebang = '/usr/bin/env python'
-    generate_script(user, q, shebang, 'output.py')
+    generate_script(user, q, shebang, output_file)
 
 
 @cli.command()
