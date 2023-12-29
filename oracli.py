@@ -161,12 +161,6 @@ def write_commands_to_file(commands, shebang, output_file):
     print("Generated {}".format(output_file))
 
 
-def confirm_response(prompt_response):
-    if prompt_response.strip() == '' or prompt_response.strip().lower() in ['y', 'ye', 'yes']:
-        return True
-    return False
-
-
 def generate_script(msg, shebang, output_file):
     thread_id = get_or_create_thread()
     tags = [
