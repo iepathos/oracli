@@ -41,13 +41,19 @@ This command will open Firefox if it is installed on your system.
         output = gen.parse_codefences(input_text2)
         assert output == expected_output
 
-    def test_thread_file_write_get_and_clear(self):
+    def test_thread_file_get_and_clear(self):
         """ """
 
         gen.ORACLI_DIR = os.path.expanduser("/tmp/test_oracli")
         thread_file_path = os.path.join(gen.ORACLI_DIR, "current_thread")
+        sample_thread_str = "thread_mw8zu2QznCPsf1Y02WyNmBTH"
         gen.ORACLI_THREAD_FILE = thread_file_path
-        thread_id = gen.get_or_create_thread()
+        # try not to require OPENAI_API_KEY we do not need
+        # to test their API functionality just local functions
+        # thread_id = gen.get_or_create_thread()
+        thread_id = sample_thread_str
+        with open(thread_file_path, "w") as f:
+            f.write(sample_thread_str)
         output = gen.get_thread()
         assert thread_id == output
 
