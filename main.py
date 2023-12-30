@@ -23,7 +23,8 @@ def cli():
 @cli.command()
 @click.argument("prompt")
 @click.option("-o", "--output-file")
-def sh(prompt, output_file):
+@click.option("-c", "--context-file")
+def sh(prompt, output_file, context_file):
     """Generate a shell script to accomplish tasks auomatically."""
     if not output_file:
         output_file = "output.sh"
@@ -34,7 +35,7 @@ def sh(prompt, output_file):
         "for {os_type}".format(os_type=platform.system()),
         "with shell {shebang}".format(shebang=shebang),
     ]
-    commands = gen.generate_commands(prompt, tags)
+    commands = gen.generate_commands(prompt, tags, context_file)
     gen.write_commands_to_file(commands, output_file, shebang)
 
 

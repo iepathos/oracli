@@ -5,7 +5,9 @@ import os
 import stat
 import time
 import black
+import shutil
 import reindent
+from pathlib import Path
 from openai import OpenAI
 from dotenv import load_dotenv
 from loguru import logger as log
@@ -13,6 +15,8 @@ from loguru import logger as log
 APP_NAME = "oracli"
 ORACLI_DIR = os.path.expanduser("~/.oracli")
 ORACLI_THREAD_FILE = os.path.join(ORACLI_DIR, "current_thread")
+
+SUPPORTED_CONTEXT_FILE_FORMATS = ['c', 'cpp', 'csv', 'docx', 'html', 'java', 'json', 'md', 'pdf', 'php', 'pptx', 'py', 'rb', 'tex', 'txt', 'css', 'jpeg', 'jpg', 'js', 'gif', 'png', 'tar', 'ts', 'xlsx', 'xml', 'zip']
 
 load_dotenv()
 
@@ -141,13 +145,15 @@ def parse_codefences(text):
 
 
 def write_commands_to_file(commands, output_file, shebang):
+    if len(commands) == 0:
+        print("No commands parsed for script generation.")
+        return
     if os.path.exists(output_file):
         os.remove(output_file)
 
     with open(output_file, "w") as f:
-        shebang = "#!{shebang}\n".format(shebang=shebang)
         if shebang not in commands[0]:
-            f.write(shebang)
+            f.write("#!{shebang}\n".format(shebang=shebang))
         for line in commands:
             f.write(line + "\n")
 
@@ -185,17 +191,49 @@ def black_python(script_path):
         f.write(code)
 
 
-def generate_commands(msg, tags):
+def pop_top_line(file):
+    with open(file, 'r+') as f: # open file in read / write mode
+        firstLine = f.readline() # read the first line and throw it out
+        data = f.read() # read the rest
+        f.seek(0) # set the cursor to the top of the file
+        f.write(data) # write the data back
+        f.truncate() # set the file size to the current size
+        return firstLine
+
+
+def generate_commands(msg, tags, context_file=None):
     thread_id = get_or_create_thread()
 
     for tag in tags:
         msg += " {tag}".format(tag=tag)
     log.info(msg)
-    message = client.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=msg,
-    )
+    if context_file:
+        log.info("Context file {context_file}".format(context_file=context_file))
+        extension = context_file.split('.')[-1]
+        if extension not in SUPPORTED_CONTEXT_FILE_FORMATS:
+            # rewrite with extension .txt
+            fname = context_file.split('/')[-1][::-1].split('.', 1)[1][::-1]
+            tmp_context_file = os.path.join('/tmp', fname + '.txt')
+            shutil.copyfile(context_file, tmp_context_file)
+            pop_top_line(tmp_context_file)
+            context_file = tmp_context_file
+            log.info("New context_file {}".format(context_file))
+        file = client.files.create(
+          file=open(context_file, "rb"),
+          purpose="assistants"
+        )
+        message = client.beta.threads.messages.create(
+            thread_id=thread_id,
+            role="user",
+            content=msg,
+            file_ids=[file.id],
+        )
+    else:
+        message = client.beta.threads.messages.create(
+            thread_id=thread_id,
+            role="user",
+            content=msg,
+        )
     # print(message)
     assistant_id = get_or_create_assistant()
     run = client.beta.threads.runs.create(
@@ -222,3 +260,4 @@ def generate_commands(msg, tags):
     print()
 
     return commands
+

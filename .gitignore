@@ -1,6 +1,7 @@
 .env
 output.sh
 output.py
+context.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
