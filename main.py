@@ -16,6 +16,7 @@ def _initlog():
 
 @click.group()
 def cli():
+    """AI script generation tool."""
     pass
 
 @cli.command()
