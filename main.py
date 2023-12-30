@@ -19,13 +19,14 @@ def cli():
     """AI script generation tool."""
     pass
 
+
 @cli.command()
-@click.argument('prompt')
-@click.option('-o', '--output-file')
+@click.argument("prompt")
+@click.option("-o", "--output-file")
 def sh(prompt, output_file):
     """Generate a shell script to accomplish tasks auomatically."""
     if not output_file:
-        output_file = 'output.sh'
+        output_file = "output.sh"
 
     shebang = os.environ.get("SHELL")
     tags = [
@@ -38,14 +39,14 @@ def sh(prompt, output_file):
 
 
 @cli.command()
-@click.argument('prompt')
-@click.option('-o', '--output-file')
+@click.argument("prompt")
+@click.option("-o", "--output-file")
 def py(prompt, output_file):
     """Generate a python script to accomplish tasks auomatically."""
     if not output_file:
-        output_file = 'output.py'
-    
-    shebang = '/usr/bin/env python'
+        output_file = "output.py"
+
+    shebang = "/usr/bin/env python"
     tags = [
         # "generate script",
         "for {os_type}".format(os_type=platform.system()),
@@ -63,6 +64,6 @@ def clear():
     gen.clear_thread()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _initlog()
     cli()
