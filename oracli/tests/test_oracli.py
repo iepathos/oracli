@@ -44,8 +44,9 @@ This command will open Firefox if it is installed on your system.
     def test_thread_file_get_and_clear(self):
         """ """
 
-        gen.ORACLI_DIR = os.path.expanduser("/tmp/test_oracli")
-        thread_file_path = os.path.join(gen.ORACLI_DIR, "current_thread")
+        TMP_DIR = os.environ.get("TMP_DIR", "/tmp")
+        gen.ORACLI_DIR = ORACLI_DIR = os.path.join(TMP_DIR, "test_oracli")
+        thread_file_path = os.path.join(ORACLI_DIR, "current_thread")
         sample_thread_str = "thread_mw8zu2QznCPsf1Y02WyNmBTH"
         gen.ORACLI_THREAD_FILE = thread_file_path
         # try not to require OPENAI_API_KEY we do not need
