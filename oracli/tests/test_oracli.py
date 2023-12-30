@@ -70,6 +70,21 @@ This command will open Firefox if it is installed on your system.
             not os.path.exists(thread_file_path),
         )
 
+    def test_write_commands_to_file(self):
+        TMP_DIR = os.environ.get("TMP_DIR", "/tmp")
+        output_file = os.path.join(TMP_DIR, "test_commands.sh")
+        shebang = "/bin/bash"
+        commands = ["echo 'Hello, World!'", "echo 'and farewell!'"]
+        gen.write_commands_to_file(commands, output_file, shebang)
+
+        with open(output_file) as f:
+            lines = f.readlines()
+
+        shebang_line = "#!/bin/bash"
+        expected_lines = [shebang_line] + commands
+        for idx, line in enumerate(lines):
+            self.assertTrue(expected_lines[idx].strip() == line.strip())
+
 
 if __name__ == "__main__":
     unittest.main()
