@@ -42,7 +42,8 @@ def sh(prompt, output_file, context_file):
 @cli.command()
 @click.argument("prompt")
 @click.option("-o", "--output-file")
-def py(prompt, output_file):
+@click.option("-c", "--context-file")
+def py(prompt, output_file, context_file):
     """Generate a python script to accomplish tasks auomatically."""
     if not output_file:
         output_file = "output.py"
@@ -53,7 +54,7 @@ def py(prompt, output_file):
         "for {os_type}".format(os_type=platform.system()),
         "with {shebang}".format(shebang=shebang),
     ]
-    commands = gen.generate_commands(prompt, tags)
+    commands = gen.generate_commands(prompt, tags, context_file)
     gen.write_commands_to_file(commands, output_file, shebang)
     gen.reindent_python(output_file)
     gen.black_python(output_file)
