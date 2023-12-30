@@ -1,4 +1,4 @@
-name: Python package
+name: Execute pytests to verify latest commits are working
 
 on: [push]
 
