@@ -142,10 +142,6 @@ def get_message_value(message):
     return message["content"][0]["text"]["value"]
 
 
-def print_message(message):
-    print(get_message_value(message))
-
-
 def parse_codefences(text):
     """
     Shell commands in the message should be code fenced like
@@ -280,7 +276,7 @@ def generate_commands(msg, tags, context_file=None):
     messages = client.beta.threads.messages.list(thread_id=thread_id)
 
     message = messages.model_dump()["data"][0]
-    print_message(message)
+    print(get_message_value(message))
 
     text = get_message_value(message)
     commands = parse_codefences(text)
