@@ -22,6 +22,7 @@ def cli():
 @click.argument('prompt')
 @click.option('-o', '--output-file')
 def sh(prompt, output_file):
+    """Generate a shell script to accomplish tasks auomatically."""
     if not output_file:
         output_file = 'output.sh'
 
@@ -39,6 +40,7 @@ def sh(prompt, output_file):
 @click.argument('prompt')
 @click.option('-o', '--output-file')
 def py(prompt, output_file):
+    """Generate a python script to accomplish tasks auomatically."""
     if not output_file:
         output_file = 'output.py'
     
@@ -56,6 +58,7 @@ def py(prompt, output_file):
 
 @cli.command()
 def clear():
+    """Clear AI assistant thread to start over fresh."""
     gen.clear_thread()
 
 
