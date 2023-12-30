@@ -25,7 +25,7 @@ def cli():
 @click.option("-o", "--output-file")
 @click.option("-c", "--context-file")
 def sh(prompt, output_file, context_file):
-    """Generate a shell script to accomplish tasks auomatically."""
+    """Generate a shell script to accomplish tasks automatically."""
     if not output_file:
         output_file = "output.sh"
 
@@ -44,7 +44,7 @@ def sh(prompt, output_file, context_file):
 @click.option("-o", "--output-file")
 @click.option("-c", "--context-file")
 def py(prompt, output_file, context_file):
-    """Generate a python script to accomplish tasks auomatically."""
+    """Generate a python script to accomplish tasks automatically."""
     if not output_file:
         output_file = "output.py"
 
