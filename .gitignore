@@ -4,6 +4,8 @@ output.py
 context.sh
 
 junit/
+test-results.xml
+pytest-coverage.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
