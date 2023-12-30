@@ -3,6 +3,8 @@ output.sh
 output.py
 context.sh
 
+junit/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
