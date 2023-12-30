@@ -1,6 +1,6 @@
 FROM python:latest
 
-ADD oracli.py .
+ADD oracli/oracli.py .
 ADD pyproject.toml .
 ADD poetry.lock .
 RUN pip install poetry
