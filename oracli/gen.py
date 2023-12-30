@@ -15,6 +15,7 @@ from loguru import logger as log
 APP_NAME = "oracli"
 ORACLI_DIR = os.path.expanduser("~/.oracli")
 ORACLI_THREAD_FILE = os.path.join(ORACLI_DIR, "current_thread")
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo")
 
 SUPPORTED_CONTEXT_FILE_FORMATS = [
     "c",
@@ -77,7 +78,7 @@ def create_assistant():
         name="Oracli",
         instructions="You are a personal command line shell assistant. Write shell, python, ansible, and terraform scripts to automate command line tasks.",
         tools=[{"type": "code_interpreter"}],
-        model="gpt-3.5-turbo",
+        model=OPENAI_MODEL,
     )
     return assistant.id
 
