@@ -75,7 +75,7 @@ def clear_thread(thread_file=ORACLI_THREAD_FILE):
 def create_assistant():
     assistant = client.beta.assistants.create(
         name="Oracli",
-        instructions="You are a personal command line shell assistant. Write shell, python, ansible, and terraform scripts to automate command line tasks on MacOS Darwin and Ubuntu Linux.",
+        instructions="You are a personal command line shell assistant. Write shell, python, ansible, and terraform scripts to automate command line tasks.",
         tools=[{"type": "code_interpreter"}],
         model="gpt-3.5-turbo",
     )
