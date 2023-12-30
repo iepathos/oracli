@@ -3,7 +3,7 @@
 
 
 import unittest
-from oracli import parse_shell_commands
+from .oracli import parse_shell_commands
 
 class TestOracli(unittest.TestCase):
 
