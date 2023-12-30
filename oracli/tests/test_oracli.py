@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+import os
 import unittest
-from oracli.gen import parse_codefences
+
+from oracli import gen
+
+TEST_FILE = os.path.join('tmp', 'current_thread')
 
 class TestOracli(unittest.TestCase):
 
@@ -19,7 +22,7 @@ This command will open Firefox in the default web browser on your Darwin system.
 		'''
 
 		expected_output = ['open -a Firefox']
-		output = parse_codefences(input_text)
+		output = gen.parse_codefences(input_text)
 		assert(output == expected_output)
 
 
@@ -32,8 +35,24 @@ open -a Firefox
 
 This command will open Firefox if it is installed on your system.
 		'''
-		output = parse_codefences(input_text2)
+		output = gen.parse_codefences(input_text2)
 		assert(output == expected_output)
+
+	def test_thread_file_write_get_and_clear(self):
+		'''
+		'''
+		
+
+		gen.ORACLI_DIR = os.path.expanduser('/tmp/test_oracli')
+		thread_file_path = os.path.join(gen.ORACLI_DIR, 'current_thread')
+		gen.ORACLI_THREAD_FILE = thread_file_path
+		thread_id = gen.get_or_create_thread()
+		output = gen.get_thread()
+		assert(thread_id == output)
+
+		self.assertTrue('thread file {} exists'.format(thread_file_path), os.path.exists(thread_file_path))
+		gen.clear_thread()
+		self.assertTrue('thread file {} does not exist'.format(thread_file_path), not os.path.exists(thread_file_path))
 
 
 if __name__ == '__main__':
