@@ -21,3 +21,8 @@ jobs:
           poetry run pytest --doctest-modules --junitxml=junit/test-results.xml --cov=oracli --cov-report=xml --cov-report=html
         env:
           TMP_DIR: ${{ runner.temp }}
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./coverage.xml
+          junitxml-path: ./junit/test-results.xml
