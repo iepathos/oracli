@@ -47,11 +47,6 @@ SUPPORTED_CONTEXT_FILE_FORMATS = [
 
 load_dotenv()
 
-client = OpenAI(
-    # This is the default and can be omitted
-    api_key=os.environ.get("OPENAI_API_KEY"),
-)
-
 
 def write_thread_file(thread_id):
     if not os.path.exists(ORACLI_DIR):
@@ -88,6 +83,10 @@ def create_assistant():
 
 
 def get_assistant_id():
+    client = OpenAI(
+        # This is the default and can be omitted
+        api_key=os.environ.get("OPENAI_API_KEY"),
+    )
     data = client.beta.assistants.list().model_dump()
     for entry in data["data"]:
         if entry["name"] == "Shellai":
@@ -103,6 +102,10 @@ def get_or_create_assistant():
 
 
 def create_thread(user):
+    client = OpenAI(
+        # This is the default and can be omitted
+        api_key=os.environ.get("OPENAI_API_KEY"),
+    )
     thread = client.beta.threads.create()
     return thread
 
@@ -229,6 +232,10 @@ def pop_top_line(file):
 
 
 def generate_commands(msg, tags, context_file=None):
+    client = OpenAI(
+        # This is the default and can be omitted
+        api_key=os.environ.get("OPENAI_API_KEY"),
+    )
     thread_id = get_or_create_thread()
 
     for tag in tags:
