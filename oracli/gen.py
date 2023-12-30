@@ -101,7 +101,7 @@ def get_or_create_assistant():
     return assistant_id
 
 
-def create_thread(user):
+def create_thread():
     client = OpenAI(
         # This is the default and can be omitted
         api_key=os.environ.get("OPENAI_API_KEY"),
@@ -113,8 +113,7 @@ def create_thread(user):
 def get_or_create_thread():
     thread_id = get_thread()
     if thread_id is None:
-        user = os.environ.get("USER")
-        thread = create_thread(user)
+        thread = create_thread()
         write_thread_file(thread.id)
         thread_id = thread.id
     return thread_id
