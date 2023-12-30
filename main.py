@@ -37,7 +37,6 @@ def py(prompt, output_file='output.py'):
 @cli.command()
 def clear():
     clear_thread()
-    print("Done.")
 
 
 if __name__ == '__main__':
