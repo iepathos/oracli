@@ -16,7 +16,34 @@ APP_NAME = "oracli"
 ORACLI_DIR = os.path.expanduser("~/.oracli")
 ORACLI_THREAD_FILE = os.path.join(ORACLI_DIR, "current_thread")
 
-SUPPORTED_CONTEXT_FILE_FORMATS = ['c', 'cpp', 'csv', 'docx', 'html', 'java', 'json', 'md', 'pdf', 'php', 'pptx', 'py', 'rb', 'tex', 'txt', 'css', 'jpeg', 'jpg', 'js', 'gif', 'png', 'tar', 'ts', 'xlsx', 'xml', 'zip']
+SUPPORTED_CONTEXT_FILE_FORMATS = [
+    "c",
+    "cpp",
+    "csv",
+    "docx",
+    "html",
+    "java",
+    "json",
+    "md",
+    "pdf",
+    "php",
+    "pptx",
+    "py",
+    "rb",
+    "tex",
+    "txt",
+    "css",
+    "jpeg",
+    "jpg",
+    "js",
+    "gif",
+    "png",
+    "tar",
+    "ts",
+    "xlsx",
+    "xml",
+    "zip",
+]
 
 load_dotenv()
 
@@ -192,12 +219,12 @@ def black_python(script_path):
 
 
 def pop_top_line(file):
-    with open(file, 'r+') as f: # open file in read / write mode
-        firstLine = f.readline() # read the first line and throw it out
-        data = f.read() # read the rest
-        f.seek(0) # set the cursor to the top of the file
-        f.write(data) # write the data back
-        f.truncate() # set the file size to the current size
+    with open(file, "r+") as f:  # open file in read / write mode
+        firstLine = f.readline()  # read the first line and throw it out
+        data = f.read()  # read the rest
+        f.seek(0)  # set the cursor to the top of the file
+        f.write(data)  # write the data back
+        f.truncate()  # set the file size to the current size
         return firstLine
 
 
@@ -209,19 +236,16 @@ def generate_commands(msg, tags, context_file=None):
     log.info(msg)
     if context_file:
         log.info("Context file {context_file}".format(context_file=context_file))
-        extension = context_file.split('.')[-1]
+        extension = context_file.split(".")[-1]
         if extension not in SUPPORTED_CONTEXT_FILE_FORMATS:
             # rewrite with extension .txt
-            fname = context_file.split('/')[-1][::-1].split('.', 1)[1][::-1]
-            tmp_context_file = os.path.join('/tmp', fname + '.txt')
+            fname = context_file.split("/")[-1][::-1].split(".", 1)[1][::-1]
+            tmp_context_file = os.path.join("/tmp", fname + ".txt")
             shutil.copyfile(context_file, tmp_context_file)
             pop_top_line(tmp_context_file)
             context_file = tmp_context_file
             log.info("New context_file {}".format(context_file))
-        file = client.files.create(
-          file=open(context_file, "rb"),
-          purpose="assistants"
-        )
+        file = client.files.create(file=open(context_file, "rb"), purpose="assistants")
         message = client.beta.threads.messages.create(
             thread_id=thread_id,
             role="user",
@@ -260,4 +284,3 @@ def generate_commands(msg, tags, context_file=None):
     print()
 
     return commands
-
