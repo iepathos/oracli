@@ -226,5 +226,5 @@ def generate_script(msg, shebang, output_file):
         return
 
     print()
-    
+
     write_commands_to_file(commands, shebang, output_file)
