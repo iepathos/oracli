@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "oracli"
 version = "0.1.0"
-description = ""
+description = "Oracli is a command line AI script generation tool"
 authors = ["Glen Baker <iepathos@gmail.com>"]
 readme = "README.md"
 
@@ -11,6 +11,8 @@ openai = "^1.6.1"
 python-dotenv = "^1.0.0"
 click = "^8.1.7"
 loguru = "^0.7.2"
+reindent = "^3.5.1"
+black = "^23.12.1"
 
 [tool.poetry.group.dev.dependencies]
 poetry = "^1.7.1"

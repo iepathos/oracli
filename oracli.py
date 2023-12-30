@@ -5,7 +5,9 @@ import os
 import stat
 import time
 import click
+import black
 import logging
+import reindent
 import readline
 import platform
 import subprocess
@@ -161,10 +163,35 @@ def write_commands_to_file(commands, shebang, output_file):
     print("Generated {}".format(output_file))
 
 
+def reindent_python_script(script_path):
+    log.info("Running reindent to check indentation on {script}".format(script=script_path))
+    reindent.makebackup = False
+    reindent.check(script_path)
+
+
+def black_python_script(script_path):
+    log.info("Formatting {script} with black".format(script=script_path))
+    BLACK_MODE = black.Mode(target_versions={black.TargetVersion.PY311}, line_length=120)
+
+    with open(script_path) as f:
+        code = f.read()
+
+    try:
+        code = black.format_file_contents(code, fast=False, mode=BLACK_MODE)
+    except black.NothingChanged:
+        pass
+    except Exception as e:
+        log.error(e)
+
+    with open(script_path, 'w') as f:
+        f.write(code)
+
+
 def generate_script(msg, shebang, output_file):
     thread_id = get_or_create_thread()
     tags = [
-        "in {os_type}".format(os_type=platform.system()),
+        # "generate script",
+        "for {os_type}".format(os_type=platform.system()),
         "with {shebang}".format(shebang=shebang),
     ]
 
@@ -207,6 +234,10 @@ def generate_script(msg, shebang, output_file):
     print()
     
     write_commands_to_file(commands, shebang, output_file)
+
+    if 'python' in shebang:
+        reindent_python_script(output_file)
+        black_python_script(output_file)
 
 
 @click.group()
