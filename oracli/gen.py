@@ -4,21 +4,23 @@
 import os
 import stat
 import time
-import click
 import black
-import logging
 import reindent
-import readline
 import platform
-import subprocess
 from openai import OpenAI
 from dotenv import load_dotenv
-
 from loguru import logger as log
 
 APP_NAME = "oracli"
 ORACLI_DIR = os.path.expanduser('~/.oracli')
 ORACLI_THREAD_FILE = os.path.join(ORACLI_DIR, 'current_thread')
+
+load_dotenv()
+
+client = OpenAI(
+    # This is the default and can be omitted
+    api_key=os.environ.get("OPENAI_API_KEY"),
+)
 
 
 def write_thread_file(thread_id):
@@ -37,25 +39,18 @@ def get_thread():
     return thread_id
 
 
-def _initlog():
-    if os.environ.get("DEBUG", False):
-        logging.basicConfig(level=logging.INFO)
-
-_initlog()
-
-load_dotenv()
-
-
-client = OpenAI(
-    # This is the default and can be omitted
-    api_key=os.environ.get("OPENAI_API_KEY"),
-)
+def clear_thread(thread_file=ORACLI_THREAD_FILE):
+    if os.path.exists(thread_file):
+        log.warning("Removing existing assistant thread.")
+        os.remove(thread_file)
+    else:
+        log.info("No assistant thread found. {}".format(thread_file))
 
 
 def create_assistant():
     assistant = client.beta.assistants.create(
         name="Oracli",
-        instructions="You are a personal command line shell assistant. Write and run code to accomplish command line tasks.",
+        instructions="You are a personal command line shell assistant. Write shell, python, ansible, and terraform scripts to automate command line tasks on MacOS Darwin and Ubuntu Linux.",
         tools=[{"type": "code_interpreter"}],
         model="gpt-3.5-turbo"
     )
@@ -64,10 +59,9 @@ def create_assistant():
 
 def get_assistant_id():
     data = client.beta.assistants.list().model_dump()
-    if len(data['data']) > 0:
-        for entry in data['data']:
-            if entry['name'] == 'Shellai':
-                return entry['id']
+    for entry in data['data']:
+        if entry['name'] == 'Shellai':
+            return entry['id']
     return None
 
 
@@ -119,7 +113,7 @@ def print_message(message):
     print(get_message_value(message))
 
 
-def parse_shell_commands(text):
+def parse_codefences(text):
     '''
     Shell commands in the message should be code fenced like
 
@@ -226,7 +220,7 @@ def generate_script(msg, shebang, output_file):
     print_message(message)
 
     text = get_message_value(message)
-    commands = parse_shell_commands(text)
+    commands = parse_codefences(text)
     if len(commands) == 0:
         log.warning("No code fenced commands parsed from openai response text.")
         return
@@ -234,41 +228,3 @@ def generate_script(msg, shebang, output_file):
     print()
     
     write_commands_to_file(commands, shebang, output_file)
-
-    if 'python' in shebang:
-        reindent_python_script(output_file)
-        black_python_script(output_file)
-
-
-@click.group()
-def cli():
-    pass
-
-@cli.command()
-@click.argument('prompt')
-@click.option('-o', '--output-file')
-def sh(prompt, output_file='output.sh'):
-    shebang = os.environ.get("SHELL")
-    generate_script(prompt, shebang, output_file)
-
-
-@cli.command()
-@click.argument('prompt')
-@click.option('-o', '--output-file')
-def py(prompt, output_file='output.py'):
-    shebang = '/usr/bin/env python'
-    generate_script(prompt, shebang, output_file)
-
-
-@cli.command()
-def clear():
-    if os.path.exists(ORACLI_THREAD_FILE):
-        log.warning("Removing existing assistant thread.")
-        os.remove(ORACLI_THREAD_FILE)
-    else:
-        log.info("No assistant thread found. {}".format(ORACLI_THREAD_FILE))
-    print("Done.")
-
-
-if __name__ == '__main__':
-    cli()
