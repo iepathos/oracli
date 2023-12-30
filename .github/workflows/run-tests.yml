@@ -18,6 +18,6 @@ jobs:
           poetry install --sync --with dev
       - name: Test with pytest
         run: |
-          poetry run pytest --doctest-modules --junitxml=junit/test-results.xml
+          poetry run pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
         env:
           TMP_DIR: ${{ runner.temp }}
