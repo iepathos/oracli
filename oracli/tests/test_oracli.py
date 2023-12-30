@@ -53,6 +53,8 @@ This command will open Firefox if it is installed on your system.
         # to test their API functionality just local functions
         # thread_id = gen.get_or_create_thread()
         thread_id = sample_thread_str
+        if not os.path.exists(ORACLI_DIR):
+            os.mkdir(ORACLI_DIR)
         with open(thread_file_path, "w") as f:
             f.write(sample_thread_str)
         output = gen.get_thread()
