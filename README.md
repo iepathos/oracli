@@ -24,7 +24,7 @@ Optionally add bin to PATH.
 export PATH=$PATH:/path/to/oracli/bin
 ```
 
-# Add OPENAI API Key to .env
+# Add OpenAI API Key to .env
 
 Create a .env files in oracli repository and add your OpenAI API key.
 
