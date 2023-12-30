@@ -85,6 +85,26 @@ This command will open Firefox if it is installed on your system.
         for idx, line in enumerate(lines):
             self.assertTrue(expected_lines[idx].strip() == line.strip())
 
+    def test_get_message_value(self):
+        sample_message = {
+            "id": "msg_zZ4fKCRWWfiAMHGY0Sz1rcfu",
+            "assistant_id": "asst_SdXbODvFlAeLUDHZb5latq2t",
+            "content": [
+                {"text": {"annotations": [], "value": "testing123"}, "type": "text"}
+            ],
+            "created_at": 1703847172,
+            "file_ids": [],
+            "metadata": {},
+            "object": "thread.message",
+            "role": "assistant",
+            "run_id": "run_HxFioX50N2IZTFXdM6BfKikp",
+            "thread_id": "thread_Q9FHIWG3A3AyBto8lZVfHHDq",
+        }
+
+        expected_output = "testing123"
+        output = gen.get_message_value(sample_message)
+        self.assertTrue(expected_output == output)
+
 
 if __name__ == "__main__":
     unittest.main()
