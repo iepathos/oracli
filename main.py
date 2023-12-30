@@ -4,7 +4,9 @@
 import os
 import click
 import logging
-from oracli.gen import generate_script, reindent_python_script, black_python_script, clear_thread
+import platform
+
+from oracli import gen
 
 
 def _initlog():
@@ -19,24 +21,42 @@ def cli():
 @cli.command()
 @click.argument('prompt')
 @click.option('-o', '--output-file')
-def sh(prompt, output_file='output.sh'):
+def sh(prompt, output_file):
+    if not output_file:
+        output_file = 'output.sh'
+
     shebang = os.environ.get("SHELL")
-    generate_script(prompt, shebang, output_file)
+    tags = [
+        # "generate script",
+        "for {os_type}".format(os_type=platform.system()),
+        "with shell {shebang}".format(shebang=shebang),
+    ]
+    commands = gen.generate_commands(prompt, tags)
+    gen.write_commands_to_file(commands, output_file, shebang)
 
 
 @cli.command()
 @click.argument('prompt')
 @click.option('-o', '--output-file')
-def py(prompt, output_file='output.py'):
+def py(prompt, output_file):
+    if not output_file:
+        output_file = 'output.py'
+    
     shebang = '/usr/bin/env python'
-    generate_script(prompt, shebang, output_file)
-    reindent_python_script(output_file)
-    black_python_script(output_file)
+    tags = [
+        # "generate script",
+        "for {os_type}".format(os_type=platform.system()),
+        "with {shebang}".format(shebang=shebang),
+    ]
+    commands = gen.generate_commands(prompt, tags)
+    gen.write_commands_to_file(commands, output_file, shebang)
+    gen.reindent_python(output_file)
+    gen.black_python(output_file)
 
 
 @cli.command()
 def clear():
-    clear_thread()
+    gen.clear_thread()
 
 
 if __name__ == '__main__':

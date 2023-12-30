@@ -6,7 +6,6 @@ import stat
 import time
 import black
 import reindent
-import platform
 from openai import OpenAI
 from dotenv import load_dotenv
 from loguru import logger as log
@@ -141,13 +140,14 @@ def parse_codefences(text):
     return res
 
 
-def write_commands_to_file(commands, shebang, output_file):
+def write_commands_to_file(commands, output_file, shebang):
     if os.path.exists(output_file):
         os.remove(output_file)
 
     with open(output_file, 'w') as f:
+        shebang = '#!{shebang}\n'.format(shebang=shebang)
         if shebang not in commands[0]:
-            f.write('#!{shebang}\n'.format(shebang=shebang))
+            f.write(shebang)
         for line in commands:
             f.write(line + "\n")
 
@@ -157,13 +157,13 @@ def write_commands_to_file(commands, shebang, output_file):
     print("Generated {}".format(output_file))
 
 
-def reindent_python_script(script_path):
+def reindent_python(script_path):
     log.info("Running reindent to check indentation on {script}".format(script=script_path))
     reindent.makebackup = False
     reindent.check(script_path)
 
 
-def black_python_script(script_path):
+def black_python(script_path):
     log.info("Formatting {script} with black".format(script=script_path))
     BLACK_MODE = black.Mode(target_versions={black.TargetVersion.PY311}, line_length=120)
 
@@ -181,13 +181,8 @@ def black_python_script(script_path):
         f.write(code)
 
 
-def generate_script(msg, shebang, output_file):
+def generate_commands(msg, tags):
     thread_id = get_or_create_thread()
-    tags = [
-        # "generate script",
-        "for {os_type}".format(os_type=platform.system()),
-        "with {shebang}".format(shebang=shebang),
-    ]
 
     for tag in tags:
         msg += " {tag}".format(tag=tag)
@@ -227,4 +222,5 @@ def generate_script(msg, shebang, output_file):
 
     print()
 
-    write_commands_to_file(commands, shebang, output_file)
+    return commands
+    
