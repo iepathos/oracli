@@ -177,44 +177,24 @@ def write_commands_to_file(commands, output_file, shebang):
     if os.path.exists(output_file):
         os.remove(output_file)
 
+    lines_to_write = []
+    if shebang not in commands[0]:
+        lines_to_write.append("#!{shebang}\n".format(shebang=shebang))
+    for line in commands:
+        lines_to_write.append(line + "\n")
     with open(output_file, "w") as f:
-        if shebang not in commands[0]:
-            f.write("#!{shebang}\n".format(shebang=shebang))
-        for line in commands:
-            f.write(line + "\n")
+        for line in lines_to_write:
+            f.write(line)
 
     st = os.stat(output_file)
     os.chmod(output_file, st.st_mode | stat.S_IEXEC)
 
-    print("Generated {}".format(output_file))
+    print_hr()
+    for line in lines_to_write:
+        print(line)
 
-
-def reindent_python(script_path):
-    log.info(
-        "Running reindent to check indentation on {script}".format(script=script_path)
-    )
-    reindent.makebackup = False
-    reindent.check(script_path)
-
-
-def black_python(script_path):
-    log.info("Formatting {script} with black".format(script=script_path))
-    BLACK_MODE = black.Mode(
-        target_versions={black.TargetVersion.PY311}, line_length=120
-    )
-
-    with open(script_path) as f:
-        code = f.read()
-
-    try:
-        code = black.format_file_contents(code, fast=False, mode=BLACK_MODE)
-    except black.NothingChanged:
-        pass
-    except Exception as e:
-        log.error(e)
-
-    with open(script_path, "w") as f:
-        f.write(code)
+    print_hr()
+    print("Saved to {}".format(output_file))
 
 
 def pop_top_line(file):
@@ -227,6 +207,10 @@ def pop_top_line(file):
         return firstLine
 
 
+def print_hr():
+    print("--------------------------")
+
+
 def generate_commands(msg, tags, context_file=None):
     client = OpenAI(
         # This is the default and can be omitted
@@ -235,8 +219,9 @@ def generate_commands(msg, tags, context_file=None):
     thread_id = get_or_create_thread()
 
     for tag in tags:
-        msg += " {tag}".format(tag=tag)
-    log.info(msg)
+        msg += ", {tag}".format(tag=tag)
+    print("Prompt:", msg)
+
     if context_file:
         log.info("Context file {context_file}".format(context_file=context_file))
         extension = context_file.split(".")[-1]
@@ -276,14 +261,40 @@ def generate_commands(msg, tags, context_file=None):
     messages = client.beta.threads.messages.list(thread_id=thread_id)
 
     message = messages.model_dump()["data"][0]
+    print_hr()
     print(get_message_value(message))
-
     text = get_message_value(message)
     commands = parse_codefences(text)
     if len(commands) == 0:
         log.warning("No code fenced commands parsed from openai response text.")
         return
 
-    print()
-
     return commands
+
+
+def reindent_python(script_path):
+    log.info(
+        "Running reindent to check indentation on {script}".format(script=script_path)
+    )
+    reindent.makebackup = False
+    reindent.check(script_path)
+
+
+def black_python(script_path):
+    log.info("Formatting {script} with black".format(script=script_path))
+    BLACK_MODE = black.Mode(
+        target_versions={black.TargetVersion.PY311}, line_length=120
+    )
+
+    with open(script_path) as f:
+        code = f.read()
+
+    try:
+        code = black.format_file_contents(code, fast=False, mode=BLACK_MODE)
+    except black.NothingChanged:
+        pass
+    except Exception as e:
+        log.error(e)
+
+    with open(script_path, "w") as f:
+        f.write(code)

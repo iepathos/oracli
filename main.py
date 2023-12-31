@@ -31,8 +31,9 @@ def sh(prompt, output_file, context_file):
 
     shebang = os.environ.get("SHELL")
     tags = [
-        # "generate script",
-        "for {os_type}".format(os_type=platform.system()),
+        "return the shell code to make a devops command line script to accomplish this",
+        "only give me the code for this script",
+        # "for {os_type}".format(os_type=platform.system()),
         "with shell {shebang}".format(shebang=shebang),
     ]
     commands = gen.generate_commands(prompt, tags, context_file)

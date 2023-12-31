@@ -34,6 +34,8 @@ OPENAI_API_KEY=sk-<your-personal-openai-api-key>
 
 ## Example Usage
 
+
+
 ```shell
 $ oracli sh "test internet connection"
 ```
@@ -81,5 +83,55 @@ PING google.com (142.251.46.206): 56 data bytes
 round-trip min/avg/max/stddev = 12.292/14.751/17.068/1.981 ms
 ```
 
+```shell
+oracli sh "determine the VPN_IP from any active openvpn connection"
+Prompt: determine the VPN_IP from any active openvpn connection, return the shell code to make a devops command line script to accomplish this, only give me the code for this script, with shell /bin/zsh
+--------------------------
+To determine the VPN_IP from any active OpenVPN connection, you can use the following shell script:
+```
+
+```shell
+#!/bin/zsh
+
+# Get the default gateway for the VPN connection
+VPN_GATEWAY=$(netstat -rn | grep -m1 -E '^0\.0\.0\.0' | awk '{print $2}')
+
+# Get the IP address associated with the VPN gateway
+VPN_IP=$(ip -br addr show | grep $VPN_GATEWAY | awk '{print $3}' | cut -d'/' -f1)
+
+echo "VPN IP: $VPN_IP"
+```
+
+```shell
+Save the script to a file, such as `vpn_ip_script.sh`, and make it executable using the command `chmod +x vpn_ip_script.sh`. Then, you can run the script using `./vpn_ip_script.sh` to determine the VPN_IP associated with the active OpenVPN connection.
+
+The script uses `netstat` to find the default gateway for the VPN connection, and then `ip` to extract the IP address associated with that gateway. Finally, it outputs the VPN IP to the console.
+
+Please note that this script assumes there is an active OpenVPN connection and that `netstat` and `ip` commands are available on your system. Additionally, it requires superuser (root) privileges to execute the `netstat` and `ip` commands. Make sure to run the script with appropriate privileges.
+
+Let me know if you have any further questions!
+--------------------------
+```
+
+```shell
+#!/bin/zsh
 
 
+
+# Get the default gateway for the VPN connection
+
+VPN_GATEWAY=$(netstat -rn | grep -m1 -E '^0\.0\.0\.0' | awk '{print $2}')
+
+
+
+# Get the IP address associated with the VPN gateway
+
+VPN_IP=$(ip -br addr show | grep $VPN_GATEWAY | awk '{print $3}' | cut -d'/' -f1)
+
+
+
+echo "VPN IP: $VPN_IP"
+
+--------------------------
+Saved to output.sh
+```
