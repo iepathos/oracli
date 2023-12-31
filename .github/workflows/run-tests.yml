@@ -1,4 +1,4 @@
-name: Execute pytests to verify latest commits are working
+name: Oracli pytest
 
 on: [push]
 
